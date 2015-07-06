@@ -7,6 +7,7 @@ owncloud_nginx_server:
   type: 'php5'
   name: '{{ owncloud_domain }}'
   root: '{{ owncloud_deploy_path }}'
+  listen: "{{ owncloud_listen_port if (owncloud_listen_port|d()) else ['[::]:80'] }}"
 
   options: |
     client_max_body_size  {{ owncloud_upload_size }};
