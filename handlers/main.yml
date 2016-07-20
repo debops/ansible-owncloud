@@ -1,0 +1,4 @@
+---
+
+- name: Run Setting Strong Directory Permissions script
+  command: secure_owncloud.sh

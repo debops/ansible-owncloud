@@ -4,6 +4,25 @@
 - include: 'system_package_management.yml'
   tags: [ 'role::owncloud:pkg' ]
 
+- name: Create Setting Strong Directory Permissions script
+  template:
+    src: 'usr/local/sbin/secure_owncloud.sh.j2'
+    dest: '/usr/local/sbin/secure_owncloud.sh'
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+  tags: [ 'role::owncloud:base_install' ]
+  notify: ['Run Setting Strong Directory Permissions script']
+
+- name: Include www-data to owncloud_group
+  user:
+    name: www-data
+    append: yes
+    groups: "{{ owncloud_group }}"
+
+- include: 'configure_owncloud.yml'
+  tags: [ 'role::owncloud:configure' ]
+
 - include: 'setup_owncloud.yml'
   tags: [ 'role::owncloud:config' ]
 
