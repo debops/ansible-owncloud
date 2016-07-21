@@ -391,6 +391,15 @@ owncloud__temp_path: ''
 owncloud__deploy_path: '{{ owncloud__home }}'
 
 
+# .. envvar:: owncloud__enforce_permissions_script
+#
+# File path of the ownCloud permission script.
+owncloud__enforce_permissions_script: '{{ (ansible_local.root.lib
+                                        if (ansible_local|d() and ansible_local.root|d() and
+                                            ansible_local.root.lib|d())
+                                        else "/usr/local/lib") + "/owncloud-enforce-permissions" }}'
+
+
 # .. In memory caching [[[1
 #
 # ---------------------
@@ -445,6 +454,7 @@ owncloud__redis_password: '{{ ansible_local.redis.password
                               if (ansible_local|d() and ansible_local.redis|d() and
                                   ansible_local.redis.password|d())
                               else omit }}'
+
 
 # .. Database configuration [[[1
 #

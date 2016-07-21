@@ -1,4 +1,4 @@
 ---
 
-- name: Run Setting Strong Directory Permissions script
-  command: secure_owncloud.sh
+- name: Run enforce permissions script
+  command: owncloud-enforce-permissions
