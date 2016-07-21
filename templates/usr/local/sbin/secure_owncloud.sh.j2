@@ -7,6 +7,8 @@
 
 [[ "$UID" != 0 ]] && { echo "You must be root"; exit 1; }
 
+set -eu -o pipefail
+
 ocpath='{{ owncloud_home }}'
 htuser='{{ owncloud_user }}'
 htgroup='{{ owncloud_group }}'
