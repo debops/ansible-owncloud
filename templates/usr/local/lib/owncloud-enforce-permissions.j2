@@ -5,11 +5,10 @@
 
 # {{ ansible_managed }}
 
-[[ "$UID" != 0 ]] && { echo "You must be root"; exit 1; }
-
 set -eu -o pipefail
 
 ocpath='{{ owncloud_home }}'
+ocpath="${ocpath:-/var/www/owncloud}"
 htuser='{{ owncloud_user }}'
 htgroup='{{ owncloud_group }}'
 rootuser='root'
