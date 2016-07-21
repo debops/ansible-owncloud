@@ -1,4 +1,4 @@
 ---
 
 - name: Run enforce permissions script
-  command: owncloud-enforce-permissions
+  command: '{{ owncloud__enforce_permissions_script }}
