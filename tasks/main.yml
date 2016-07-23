@@ -12,7 +12,10 @@
     group: 'root'
     mode: '0744'
   tags: [ 'role::owncloud:base_install' ]
-  notify: [ 'Run enforce permissions script' ]
+  register: permissions_script
+
+- command: '{{ owncloud__enforce_permissions_script }}'
+  when: permissions_script.changed
 
 - name: Include www-data to owncloud_group
   user:
