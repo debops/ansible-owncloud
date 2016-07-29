@@ -9,12 +9,14 @@ set -eu -o pipefail
 
 ocpath='{{ owncloud_home }}'
 ocpath="${ocpath:-/var/www/owncloud}"
+ocdata='{{ owncloud_data_path }}'
+ocdata="${ocdata:-${ocpath}/data}"
 htuser='{{ owncloud_user }}'
 htgroup='{{ owncloud_group }}'
 rootuser='root'
 
 printf "Creating possible missing Directories\n"
-mkdir -p "${ocpath}"/data
+mkdir -p "${ocdata}"/
 mkdir -p "${ocpath}"/assets
 mkdir -p "${ocpath}"/updater
 
@@ -27,7 +29,7 @@ chown -R ${rootuser}:${htgroup} "${ocpath}"/
 chown -R ${htuser}:${htgroup} "${ocpath}"/apps/
 chown -R ${htuser}:${htgroup} "${ocpath}"/assets/
 chown -R ${htuser}:${htgroup} "${ocpath}"/config/
-chown -R ${htuser}:${htgroup} "${ocpath}"/data/
+chown -R ${htuser}:${htgroup} "${ocdata}"/
 chown -R ${htuser}:${htgroup} "${ocpath}"/themes/
 
 # These strong permissions prevent upgrading your ownCloud server;
@@ -43,8 +45,8 @@ if [ -f "${ocpath}"/.htaccess ]
   chmod 0644 "${ocpath}"/.htaccess
   chown ${rootuser}:${htgroup} "${ocpath}"/.htaccess
 fi
-if [ -f "${ocpath}"/data/.htaccess ]
+if [ -f "${ocdata}"/.htaccess ]
  then
-  chmod 0644 "${ocpath}"/data/.htaccess
-  chown ${rootuser}:${htgroup} "${ocpath}"/data/.htaccess
+  chmod 0644 "${ocdata}"/.htaccess
+  chown ${rootuser}:${htgroup} "${ocdata}"/.htaccess
 fi
