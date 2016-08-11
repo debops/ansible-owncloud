@@ -1,6 +1,6 @@
 ---
 
-sudo: required
+become: required
 dist: trusty
 
 language: 'python'
