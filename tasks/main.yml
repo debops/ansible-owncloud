@@ -18,11 +18,11 @@
   command: '{{ owncloud__enforce_permissions_script }}'
   when: permissions_script.changed
 
-- name: Include www-data to owncloud_group
+- name: Include www-data to owncloud__group
   user:
     name: www-data
     append: yes
-    groups: "{{ owncloud_group }}"
+    groups: "{{ owncloud__group }}"
 
 - include: 'configure_owncloud.yml'
   tags: [ 'role::owncloud:configure' ]

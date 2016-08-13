@@ -7,12 +7,12 @@
 
 set -eu -o pipefail
 
-ocpath='{{ owncloud_home }}'
+ocpath='{{ owncloud__home }}'
 ocpath="${ocpath:-/var/www/owncloud}"
-ocdata='{{ owncloud_data_path }}'
+ocdata='{{ owncloud__data_path }}'
 ocdata="${ocdata:-${ocpath}/data}"
-htuser='{{ owncloud_user }}'
-htgroup='{{ owncloud_group }}'
+htuser='{{ owncloud__user }}'
+htgroup='{{ owncloud__group }}'
 rootuser='root'
 
 printf "Creating possible missing Directories\n"
