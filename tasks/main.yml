@@ -26,6 +26,10 @@
               else "www-data" }}'
     append: yes
     groups: "{{ owncloud__group }}"
+  when: owncloud__user != '{{ ansible_local.nginx.user
+                              if (ansible_local|d() and ansible_local.nginx|d() and
+                                  ansible_local.nginx.user|d())
+                              else "www-data" }}'
 
 - include: 'setup_owncloud.yml'
   tags: [ 'role::owncloud:config' ]
