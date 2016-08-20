@@ -24,14 +24,24 @@
   with_subelements:
     - "{{ owncloud__statoverride }}"
     - path
-  when: owncloud__deploy_state == 'present' and owncloud__permission_type == 'dpkg'
+  when: ( owncloud__deploy_state == 'present' and
+          owncloud__permission_type == 'dpkg' and
+          owncloud__user != '{{ ansible_local.nginx.user
+                              if (ansible_local|d() and ansible_local.nginx|d() and
+                                  ansible_local.nginx.user|d())
+                              else "www-data" }}' )
 
 - name: StatOverride UnSet
   command: "dpkg-statoverride --update --force --remove \"{{ item.1 }}\""
   with_subelements:
     - "{{ owncloud__statoverride }}"
     - path
-  when: owncloud__deploy_state == 'absent' and owncloud__permission_type == 'dpkg'
+  when: ( owncloud__deploy_state == 'absent' and
+          owncloud__permission_type == 'dpkg' and
+          owncloud__user != '{{ ansible_local.nginx.user
+                              if (ansible_local|d() and ansible_local.nginx|d() and
+                                  ansible_local.nginx.user|d())
+                              else "www-data" }}' )
 
 - name: Include webserver user to owncloud__group
   user:
