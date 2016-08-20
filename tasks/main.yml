@@ -13,12 +13,27 @@
     mode: '0744'
   tags: [ 'role::owncloud:base_install' ]
   register: permissions_script
+  when: owncloud__permission_type == 'script'
 
 - name: Run enforce permissions script
   command: '{{ owncloud__enforce_permissions_script }}'
-  when: permissions_script.changed
+  when: permissions_script.changed and owncloud__permission_type == 'script'
 
-- name: Include webserver users to owncloud__group
+- name: StatOverride Set
+  command: "dpkg-statoverride --update --force --add {{ owncloud__user }} {{ owncloud__group }} {{ item.0.mode }} \"{{ item.1 }}\""
+  with_subelements:
+    - "{{ owncloud__statoverride }}"
+    - path
+  when: owncloud__deploy_state == 'present' and owncloud__permission_type == 'dpkg'
+
+- name: StatOverride UnSet
+  command: "dpkg-statoverride --update --force --remove \"{{ item.1 }}\""
+  with_subelements:
+    - "{{ owncloud__statoverride }}"
+    - path
+  when: owncloud__deploy_state == 'absent' and owncloud__permission_type == 'dpkg'
+
+- name: Include webserver user to owncloud__group
   user:
     name: '{{ ansible_local.nginx.user
               if (ansible_local|d() and ansible_local.nginx|d() and

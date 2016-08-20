@@ -1896,3 +1896,67 @@ owncloud__unattended_upgrades__dependent_origins:
   - origin: 'site=download.owncloud.org'
     by_role: 'debops.owncloud'
     state: '{{ "present" if (owncloud__auto_security_updates_enabled | bool) else "absent" }}'
+
+owncloud__permission_type: 'dpkg'
+
+owncloud__statoverride:
+    - mode: 640
+      path:
+        - "/var/www/owncloud/config/config.php"
+        - "/var/www/owncloud/config/debops.config.php"
+        - "/var/www/owncloud/config/mail.config.php"
+        - "/var/www/owncloud/config/theme.config.php"
+        - "/var/www/owncloud/data/owncloud.log"
+        - "/var/www/owncloud/themes/{{ owncloud__theme_directory_name }}/defaults.php"
+    - mode: 644
+      path:
+        - "/var/www/owncloud/data/files_external/rootcerts.crt"
+        - "/var/www/owncloud/data/.htaccess"
+        - "/var/www/owncloud/data/index.html"
+        - "/var/www/owncloud/data/.ocdata"
+        - "/var/www/owncloud/data/{{ owncloud__admin_username }}/files/Documents/Example.odt"
+        - "/var/www/owncloud/data/{{ owncloud__admin_username }}/files/ownCloud Manual.pdf"
+        - "/var/www/owncloud/data/{{ owncloud__admin_username }}/files/Photos/Paris.jpg"
+        - "/var/www/owncloud/data/{{ owncloud__admin_username }}/files/Photos/San Francisco.jpg"
+        - "/var/www/owncloud/data/{{ owncloud__admin_username }}/files/Photos/Squirrel.jpg"
+        - "/var/www/owncloud/themes/example/core/css/styles.css"
+        - "/var/www/owncloud/themes/example/core/img/favicon.ico"
+        - "/var/www/owncloud/themes/example/core/img/favicon.png"
+        - "/var/www/owncloud/themes/example/core/img/favicon.svg"
+        - "/var/www/owncloud/themes/example/core/img/favicon-touch.png"
+        - "/var/www/owncloud/themes/example/core/img/favicon-touch.svg"
+        - "/var/www/owncloud/themes/example/core/img/logo-icon.png"
+        - "/var/www/owncloud/themes/example/core/img/logo-icon.svg"
+        - "/var/www/owncloud/themes/example/core/img/logo-mail.gif"
+        - "/var/www/owncloud/themes/example/core/img/logo.png"
+        - "/var/www/owncloud/themes/example/core/img/logo.svg"
+        - "/var/www/owncloud/themes/example/defaults.php"
+        - "/var/www/owncloud/themes/README"
+        - "/var/www/owncloud/.htaccess"
+        - "/var/www/owncloud/.user.ini"
+    - mode: 755
+      path:
+        - "/var/www/owncloud/apps"
+        - "/var/www/owncloud/assets"
+        - "/var/www/owncloud/data/files_external"
+        - "/var/www/owncloud/data/{{ owncloud__admin_username }}"
+        - "/var/www/owncloud/data/{{ owncloud__admin_username }}/cache"
+        - "/var/www/owncloud/data/{{ owncloud__admin_username }}/files"
+        - "/var/www/owncloud/data/{{ owncloud__admin_username }}/files/Documents"
+        - "/var/www/owncloud/data/{{ owncloud__admin_username }}/files/Photos"
+        - "/var/www/owncloud/themes"
+        - "/var/www/owncloud/themes/example"
+        - "/var/www/owncloud/themes/example/core"
+        - "/var/www/owncloud/themes/example/core/css"
+        - "/var/www/owncloud/themes/example/core/img"
+    - mode: 770
+      path:
+        - "/var/www/owncloud/data"
+    - mode: 744
+      path:
+        - "/var/www/owncloud/config/config.sample.php"
+        - "/var/www/owncloud/config/disable-updatechecker.config.php"
+        - "/var/www/owncloud/config/.htaccess"
+    - mode: 775
+      path:
+        - "/var/www/owncloud/config"
