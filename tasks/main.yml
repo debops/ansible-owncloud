@@ -22,7 +22,7 @@
 - name: StatOverride Set
   command: "dpkg-statoverride --update --force --add {{ owncloud__user }} {{ owncloud__group }} {{ item.0.mode }} \"{{ item.1 }}\""
   with_subelements:
-    - "{{ owncloud__statoverride }}"
+    - '{{ owncloud__statoverride }}'
     - path
   when: ( owncloud__deploy_state == 'present' and
           owncloud__permission_type == 'dpkg' and
@@ -34,7 +34,7 @@
 - name: StatOverride UnSet
   command: "dpkg-statoverride --update --force --remove \"{{ item.1 }}\""
   with_subelements:
-    - "{{ owncloud__statoverride }}"
+    - '{{ owncloud__statoverride }}'
     - path
   when: ( owncloud__deploy_state == 'absent' and
           owncloud__permission_type == 'dpkg' and
@@ -50,7 +50,7 @@
                   ansible_local.nginx.user|d())
               else "www-data" }}'
     append: yes
-    groups: "{{ owncloud__group }}"
+    groups: '{{ owncloud__group }}'
   when: owncloud__user != '{{ ansible_local.nginx.user
                               if (ansible_local|d() and ansible_local.nginx|d() and
                                   ansible_local.nginx.user|d())
