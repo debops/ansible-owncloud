@@ -1465,6 +1465,26 @@ owncloud__nginx_access_log_assets: True
 # TODO: Confirm that this variable does what it says.
 owncloud__nginx_client_body_temp_path: ''
 
+owncloud__nginx__php_status: False
+owncloud__nginx__php_status_location:
+  pattern: '~ ^/(php_status|php_ping)$'
+  options: |
+    access_log off;
+    {% if nginx_status_localhost %}
+    {% for address in nginx_status_localhost | unique %}
+    allow {{ address }};
+    {% endfor %}
+    {% endif %}
+    {% if nginx_status %}
+    {% for address in nginx_status | unique %}
+     allow {{ address }};
+    {% endfor %}
+    {% endif %}
+    deny all;
+    include fastcgi_params;
+    fastcgi_index index.php;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_pass php_owncloud;
 
 # .. envvar:: owncloud__nginx__servers
 #
@@ -1519,6 +1539,9 @@ owncloud__nginx__servers:
       fastcgi_param modHeadersAvailable true;
 
     location_list:
+
+      - '{{ owncloud__nginx__php_status_location if owncloud__nginx__php_status else "" }}'
+
       - pattern: '= /robots.txt'
         options: |
           log_not_found off;
