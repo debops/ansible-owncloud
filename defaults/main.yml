@@ -44,7 +44,7 @@ owncloud__base_packages:
 #
 # List of base PHP packages required by ownCloud.
 owncloud__base_php_packages:
-  - 'apcu'
+  - 'php-apcu'
   - '{{ [ "mysql" ] if (owncloud__database in [ "mariadb", "mysql" ]) else [] }}'
   - '{{ [ "pgsql" ] if (owncloud__database in [ "postgresql" ]) else [] }}'
   - '{{ [ "redis" ] if (owncloud__redis_enabled | bool) else [] }}'
@@ -53,7 +53,7 @@ owncloud__base_php_packages:
   ## Seems to be required at least for PHP7.0 to fix:
   ## PHP Warning: PHP Startup: Unable to load dynamic library '/usr/lib/php/20151012/redis.so'
   ## - /usr/lib/php/20151012/redis.so: undefined symbol: igbinary_serialize in Unknown on line 0
-  - '{{ [ "igbinary" ]
+  - '{{ [ "php-igbinary" ]
         if (not (ansible_distribution == "Ubuntu" and (ansible_distribution_version|version_compare("15.10", "<"))))
         else [] }}'
 
@@ -68,7 +68,7 @@ owncloud__base_php_packages:
 #
 # List of optional PHP packages for ownCloud.
 owncloud__optional_php_packages:
-  - 'imagick'
+  - 'php-imagick'
 
 
 # .. envvar:: owncloud__packages
