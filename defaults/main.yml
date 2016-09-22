@@ -1897,8 +1897,21 @@ owncloud__unattended_upgrades__dependent_origins:
     by_role: 'debops.owncloud'
     state: '{{ "present" if (owncloud__auto_security_updates_enabled | bool) else "absent" }}'
 
+
+# .. envvar:: owncloud__permission_type
+#
+# Can take values 'dpkg' for dpkg-statoverride approach and 'script' in order to
+# run a script as pointed out in <https://doc.owncloud.org/server/9.1/admin_manual/installation/installation_wizard.html#setting-strong-directory-permissions>.
+
+## FIXME: Script is located templates/usr/local/lib/owncloud-enforce-permissions.j2
+## and is NOT run on owncloud package update.
+
 owncloud__permission_type: 'dpkg'
 
+# .. envvar:: owncloud__statoverride
+#
+# Dictionary of files and modes they should take, only used when owncloud__permission_type=='dpkg'
+# Modes are set according to official owncloud instructions <https://doc.owncloud.org/server/9.1/admin_manual/installation/installation_wizard.html#setting-strong-directory-permissions>.
 owncloud__statoverride:
     - mode: '0640'
       path:
