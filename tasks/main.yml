@@ -20,7 +20,7 @@
   when: permissions_script.changed and owncloud__permission_type == 'script'
 
 - name: StatOverride Set
-  command: "dpkg-statoverride --update --force --add {{ owncloud__user }} {{ owncloud__group }} {{ item.0.mode }} \"{{ item.1 }}\""
+  command: "dpkg-statoverride --update --force --add {{ owncloud__user }} {{ owncloud__group }} {{ item.0.mode }} {{ item.1 | quote }}"
   with_subelements:
     - '{{ owncloud__statoverride }}'
     - path
@@ -32,7 +32,7 @@
                               else "www-data" }}' )
 
 - name: StatOverride UnSet
-  command: "dpkg-statoverride --update --force --remove \"{{ item.1 }}\""
+  command: "dpkg-statoverride --update --force --remove {{ item.1 | quote }}"
   with_subelements:
     - '{{ owncloud__statoverride }}'
     - path
