@@ -17,7 +17,7 @@
 
 - name: Run enforce permissions script
   command: '{{ owncloud__enforce_permissions_script }}'
-  when: permissions_script.changed and owncloud__permission_type == 'script'
+  when: permissions_script|changed and owncloud__permission_type == 'script'
 
 - name: StatOverride Set
   command: "dpkg-statoverride --update --force --add {{ owncloud__user }} {{ owncloud__group }} {{ item.0.mode }} {{ item.1 | quote }}"
