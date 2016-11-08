@@ -12,7 +12,7 @@
     group: 'root'
     mode: '0744'
   tags: [ 'role::owncloud:base_install' ]
-  register: permissions_script
+  register: owncloud_pscript_result
   when: ( owncloud__deploy_state == 'present' and
           owncloud__permission_type == 'script' )
 
@@ -25,7 +25,7 @@
 - name: Run enforce permissions script
   command: '{{ owncloud__enforce_permissions_script }}'
   when: ( owncloud__deploy_state == 'present' and
-          permissions_script|changed and
+          owncloud_pscript_result|changed and
           owncloud__permission_type == 'script' )
 
 - name: StatOverride Set
@@ -36,13 +36,21 @@
   when: ( owncloud__deploy_state == 'present' and
           owncloud__permission_type == 'dpkg' )
 
+- name: StatOverride Check
+  command: "dpkg-statoverride --list '{{ owncloud__statoverride[0].path[0] }}'"
+  register: owncloud_stover_result
+  when: ( owncloud__deploy_state == 'absent' or
+          owncloud__permission_type != 'dpkg' )
+  ignore_errors: True
+
 - name: StatOverride UnSet
-  command: "dpkg-statoverride --update --force --remove {{ item.1 | quote }}"
+  command: "dpkg-statoverride --update --remove {{ item.1 | quote }}"
   with_subelements:
     - '{{ owncloud__statoverride }}'
     - path
-  when: ( owncloud__deploy_state == 'absent' or
-          owncloud__permission_type != 'dpkg' )
+  when: (( owncloud__deploy_state == 'absent' or
+           owncloud__permission_type != 'dpkg' ) and
+           owncloud_stover_result|succeeded)
 
 - name: Include webserver user to owncloud__group
   user:
