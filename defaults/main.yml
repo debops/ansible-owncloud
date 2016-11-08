@@ -1900,13 +1900,11 @@ owncloud__unattended_upgrades__dependent_origins:
 
 # .. envvar:: owncloud__permission_type
 #
-# Can take values 'dpkg' for dpkg-statoverride approach and 'script' in order to
-# run a script as pointed out in <https://doc.owncloud.org/server/9.1/admin_manual/installation/installation_wizard.html#setting-strong-directory-permissions>.
+# Can take values 'none' for default permissions, 'dpkg' for dpkg-statoverride
+# approach and 'script' in order to run a script as pointed out in
+# <https://doc.owncloud.org/server/9.1/admin_manual/installation/installation_wizard.html#setting-strong-directory-permissions>.
 
-## FIXME: Script is located templates/usr/local/lib/owncloud-enforce-permissions.j2
-## and is NOT run on owncloud package update.
-
-owncloud__permission_type: 'dpkg'
+owncloud__permission_type: 'none'
 
 # .. envvar:: owncloud__statoverride
 #
