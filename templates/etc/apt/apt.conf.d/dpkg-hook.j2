@@ -1,3 +1,6 @@
 # {{ ansible_managed }}
 
+{% if owncloud__permission_type is defined and owncloud__permission_type == 'script' %}
+DPkg::Post-Invoke {"test -x '{{ owncloud__enforce_permissions_script }}' && '{{ owncloud__enforce_permissions_script }}' || true";};
+{% endif %}
 DPkg::Post-Invoke {"test -x '{{ owncloud__dpkg_hook_script }}' && '{{ owncloud__dpkg_hook_script }}' || true";};
