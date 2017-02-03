@@ -29,7 +29,7 @@
   # An alternative would be https://doc.owncloud.org/server/9.1/admin_manual/configuration_user/user_provisioning_api.html
   # but `occ` is preferred in the case of Ansible.
 - name: Run given occ commands
-  command: php --file "{{ owncloud__home }}/occ" {{ owncloud__occ_item.command }} {{ "--output=json_pretty" if (owncloud__occ_item.get_output|d() | bool) else "" }}
+  command: '{{ owncloud__occ_bin_file_path | quote }} {{ owncloud__occ_item.command }} {{ "--output=json_pretty" if (owncloud__occ_item.get_output|d() | bool) else "" }}'
   environment: '{{ owncloud__occ_item.env|d({}) }}'
   ## TODO: Upstream needs to fix this. See above.
   changed_when: False
