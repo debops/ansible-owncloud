@@ -1,0 +1,52 @@
+#!/bin/bash
+# This script sets the recommended modes and ownership for your ownCloud 
+# directories and files
+# https://doc.owncloud.org/server/9.0/admin_manual/installation/installation_wizard.html#strong-perms-label
+
+# {{ ansible_managed }}
+
+set -eu -o pipefail
+
+ocpath='{{ owncloud__home }}'
+ocpath="${ocpath:-/var/www/owncloud}"
+ocdata='{{ owncloud__data_path }}'
+ocdata="${ocdata:-${ocpath}/data}"
+htuser='{{ owncloud__user }}'
+htgroup='{{ owncloud__group }}'
+rootuser='root'
+
+printf "Creating possible missing Directories\n"
+mkdir -p "${ocdata}"/
+mkdir -p "${ocpath}"/assets
+mkdir -p "${ocpath}"/updater
+
+printf "chmod Files and Directories\n"
+find "${ocpath}"/ "${ocdata}"/ -type f -print0 | xargs -0 chmod 0640
+find "${ocpath}"/ "${ocdata}"/ -type d -print0 | xargs -0 chmod 0750
+
+printf "chown Directories\n"
+chown -R ${rootuser}:${htgroup} "${ocpath}"/
+chown -R ${htuser}:${htgroup} "${ocpath}"/apps/
+chown -R ${htuser}:${htgroup} "${ocpath}"/assets/
+chown -R ${htuser}:${htgroup} "${ocpath}"/config/
+chown -R ${htuser}:${htgroup} "${ocdata}"/
+chown -R ${htuser}:${htgroup} "${ocpath}"/themes/
+
+# These strong permissions prevent upgrading your ownCloud server;
+# check script to quickly change permissions to allow upgrading.
+# https://doc.owncloud.org/server/9.0/admin_manual/maintenance/update.html#set-updating-permissions-label
+#chown -R ${htuser}:${htgroup} "${ocpath}"/updater/
+
+chmod +x "${ocpath}"/occ
+
+printf "chmod/chown .htaccess\n"
+if [ -f "${ocpath}"/.htaccess ]
+ then
+  chmod 0644 "${ocpath}"/.htaccess
+  chown ${rootuser}:${htgroup} "${ocpath}"/.htaccess
+fi
+if [ -f "${ocdata}"/.htaccess ]
+ then
+  chmod 0644 "${ocdata}"/.htaccess
+  chown ${rootuser}:${htgroup} "${ocdata}"/.htaccess
+fi

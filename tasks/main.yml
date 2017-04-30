@@ -4,6 +4,67 @@
 - include: 'system_package_management.yml'
   tags: [ 'role::owncloud:pkg' ]
 
+- name: Create ownCloud enforce permissions script
+  template:
+    src: 'usr/local/lib/owncloud-enforce-permissions.j2'
+    dest: '{{ owncloud__enforce_permissions_script }}'
+    owner: 'root'
+    group: 'root'
+    mode: '0744'
+  tags: [ 'role::owncloud:base_install' ]
+  register: owncloud_pscript_result
+  when: ( owncloud__deploy_state == 'present' and
+          owncloud__permission_type == 'script' )
+
+- name: Remove ownCloud enforce permissions script
+  file:
+    path: '{{ owncloud__enforce_permissions_script }}'
+    state: 'absent'
+  when: owncloud__deploy_state == 'absent'
+
+- name: Run enforce permissions script
+  command: '{{ owncloud__enforce_permissions_script }}'
+  when: ( owncloud__deploy_state == 'present' and
+          owncloud_pscript_result|changed and
+          owncloud__permission_type == 'script' )
+
+- name: StatOverride Set
+  command: "dpkg-statoverride --update --force --add {{ owncloud__user }} {{ owncloud__group }} {{ item.0.mode }} {{ item.1 | quote }}"
+  with_subelements:
+    - '{{ owncloud__statoverride }}'
+    - path
+  when: ( owncloud__deploy_state == 'present' and
+          owncloud__permission_type == 'dpkg' )
+
+- name: StatOverride Check
+  command: "dpkg-statoverride --list '{{ owncloud__statoverride[0].path[0] }}'"
+  register: owncloud_stover_result
+  when: ( owncloud__deploy_state == 'absent' or
+          owncloud__permission_type != 'dpkg' )
+  ignore_errors: True
+
+- name: StatOverride UnSet
+  command: "dpkg-statoverride --update --remove {{ item.1 | quote }}"
+  with_subelements:
+    - '{{ owncloud__statoverride }}'
+    - path
+  when: (( owncloud__deploy_state == 'absent' or
+           owncloud__permission_type != 'dpkg' ) and
+           owncloud_stover_result|succeeded)
+
+- name: Include webserver user to owncloud__group
+  user:
+    name: '{{ ansible_local.nginx.user
+              if (ansible_local|d() and ansible_local.nginx|d() and
+                  ansible_local.nginx.user|d())
+              else "www-data" }}'
+    append: yes
+    groups: '{{ owncloud__group }}'
+  when: owncloud__user != '{{ ansible_local.nginx.user
+                              if (ansible_local|d() and ansible_local.nginx|d() and
+                                  ansible_local.nginx.user|d())
+                              else "www-data" }}'
+
 - include: 'setup_owncloud.yml'
   tags: [ 'role::owncloud:config' ]
 
